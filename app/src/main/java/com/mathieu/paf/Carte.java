@@ -2,6 +2,7 @@ package com.mathieu.paf;
 
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationListener;
 import android.provider.SyncStateContract;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -15,11 +16,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class Carte extends FragmentActivity {
+public class Carte extends FragmentActivity implements LocationListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Button positionButton = null;
     private Location position = null;
+    private double lat;
+    private double lon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +35,9 @@ public class Carte extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 position = mMap.getMyLocation();
-                Toast.makeText(MainActivity.getContext(), "test", Toast.LENGTH_SHORT).show();
+                lat = position.getLatitude();
+                lon = position.getLongitude();
+                Toast.makeText(MainActivity.getContext(), "Position actuelle : "+lat+", "+lon, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -89,5 +94,29 @@ public class Carte extends FragmentActivity {
             LatLng myLocation = new LatLng(location.getLatitude(),location.getLongitude());
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation,16));
         }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (position != null) {
+            lat = position.getLatitude();
+            lon = position.getLongitude();
+            Toast.makeText(MainActivity.getContext(), "La position a changé : "+lat+" "+lon, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }
