@@ -27,7 +27,7 @@ public class Carte extends FragmentActivity {
     private boolean toggle = false;
     private double lat;
     private double lon;
-    private Handler myHandler;
+    private android.os.Handler customHandler;
     private Runnable myRunnable;
 
     @Override
@@ -63,6 +63,9 @@ public class Carte extends FragmentActivity {
             }
         });
 
+        customHandler = new android.os.Handler();
+        customHandler.postDelayed(myRunnable, 0);
+
         myRunnable = new Runnable() {
             @Override
             public void run() {
@@ -75,11 +78,10 @@ public class Carte extends FragmentActivity {
                     Toast.makeText(MainActivity.getContext(), "Relevé de position : " + lat + ", " + lon, Toast.LENGTH_SHORT).show();
                 }
 
-                autoButton.postDelayed(this, 500);
+                customHandler.postDelayed(this, 2000); //Délai entre deux relevés GPS
             }
         };
-
-        autoButton.postDelayed(myRunnable, 500); // on redemande toute les 500ms
+        myRunnable.run();
     }
 
     @Override
