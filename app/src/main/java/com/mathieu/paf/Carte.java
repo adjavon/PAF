@@ -26,7 +26,9 @@ public class Carte extends FragmentActivity {
     private Location position = null;
     private boolean toggle = false;
     private double lat;
+    private double oldLat=0;
     private double lon;
+    private double oldLon=0;
     private android.os.Handler customHandler;
     private Runnable myRunnable;
 
@@ -76,6 +78,15 @@ public class Carte extends FragmentActivity {
                     lat = position.getLatitude();
                     lon = position.getLongitude();
                     Toast.makeText(MainActivity.getContext(), "Relevé de position : " + lat + ", " + lon, Toast.LENGTH_SHORT).show();
+
+                    //Placement des marqueurs
+                    if ((Math.abs(lat-oldLat) > Math.pow(10, -4)) || (Math.abs(lon-oldLon) > Math.pow(10, -4))) {
+                        //Si la variation de position est suffisante : 10^(-4) ici soit environ 10 metres
+                        mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)));
+                    }
+
+                    oldLat = lat;
+                    oldLon = lon;
                 }
 
                 customHandler.postDelayed(this, 2000); //Délai entre deux relevés GPS
