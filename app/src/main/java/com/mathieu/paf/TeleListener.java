@@ -1,3 +1,5 @@
+package com.mathieu.paf;
+
 import android.telephony.CellInfo;
 import android.telephony.NeighboringCellInfo;
 import android.telephony.PhoneStateListener;
@@ -35,8 +37,10 @@ public class TeleListener extends PhoneStateListener {
     public String getNetworkType(){
         return networkType;
     }
-    public boolean getRoaming(){
-        return roaming;
+    public String getRoaming(){
+        if(roaming)
+            return "true";
+        else return "false";
     }
     public int getSignalStrength(){
         return signalStrength;
@@ -46,21 +50,27 @@ public class TeleListener extends PhoneStateListener {
     }
 
     //les setters
+
+    //ne pas utiliser en dehors
     public void setCallState(String state){
         callState = state;
     }
+
     //à faire une seule fois, au début
     public void setImei(){
         imei = telephonyManager.getDeviceSoftwareVersion();
     }
+
     //à faire toutes les demi secondes
-    public void setPlmn(String pLmn){
+    public void setPlmn(){
         plmn = telephonyManager.getNetworkOperator();
     }
+
     //à faire toutes les demi secondes
-    public void setOperateur(String op){
+    public void setOperateur(){
         operateur= telephonyManager.getNetworkOperatorName();
     }
+
     //à faire toutes les demi secondes
     public void setNetworkType(){
         int netType = telephonyManager.getNetworkType();
@@ -84,6 +94,8 @@ public class TeleListener extends PhoneStateListener {
     public void setRoaming(){
         roaming = telephonyManager.isNetworkRoaming();
     }
+
+    //ne pas utiliser en dehors
     public void setSignalStrength(int strength){
         signalStrength = strength;
     }
