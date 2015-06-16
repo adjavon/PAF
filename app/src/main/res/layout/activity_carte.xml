@@ -1,18 +1,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-        android:layout_height="match_parent" android:id="@+id/map" tools:context="com.mathieu.paf.Carte"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/map"
+        tools:context="com.mathieu.paf.Carte"
         android:name="com.google.android.gms.maps.SupportMapFragment" />
+
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="Mode auto : OFF"
+        android:id="@+id/auto"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:text="Position"
         android:id="@+id/button"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        />
 
 </RelativeLayout>

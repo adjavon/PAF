@@ -9,20 +9,26 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class Carte extends FragmentActivity implements LocationListener {
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
+
+public class Carte extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Button positionButton = null;
+    private Button autoButton = null;
     private Location position = null;
+    private boolean toggle = false;
     private double lat;
     private double lon;
+    private Handler myHandler;
+    private Runnable myRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +43,43 @@ public class Carte extends FragmentActivity implements LocationListener {
                 position = mMap.getMyLocation();
                 lat = position.getLatitude();
                 lon = position.getLongitude();
-                Toast.makeText(MainActivity.getContext(), "Position actuelle : "+lat+", "+lon, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.getContext(), "Position actuelle : " + lat + ", " + lon, Toast.LENGTH_SHORT).show();
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 16));
             }
         });
 
+        autoButton = (Button) findViewById(R.id.auto);
+        autoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (toggle) {
+                    autoButton.setText("Mode auto : OFF");
+                    toggle = false;
+                }
+                else{
+                    autoButton.setText("Mode auto : ON");
+                    toggle = true;
+                }
+            }
+        });
+
+        myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // Code à éxécuter de façon périodique
+
+                if (toggle) {
+                    position = mMap.getMyLocation();
+                    lat = position.getLatitude();
+                    lon = position.getLongitude();
+                    Toast.makeText(MainActivity.getContext(), "Relevé de position : " + lat + ", " + lon, Toast.LENGTH_SHORT).show();
+                }
+
+                autoButton.postDelayed(this, 500);
+            }
+        };
+
+        autoButton.postDelayed(myRunnable, 500); // on redemande toute les 500ms
     }
 
     @Override
@@ -88,35 +127,6 @@ public class Carte extends FragmentActivity implements LocationListener {
 
         mMap.setMyLocationEnabled(true);
 
-        Location location = mMap.getMyLocation();
-
-        if (location != null) {
-            LatLng myLocation = new LatLng(location.getLatitude(),location.getLongitude());
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation,16));
-        }
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        if (position != null) {
-            lat = position.getLatitude();
-            lon = position.getLongitude();
-            Toast.makeText(MainActivity.getContext(), "La position a changé : "+lat+" "+lon, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.826523, 2.346354), 16));
     }
 }
