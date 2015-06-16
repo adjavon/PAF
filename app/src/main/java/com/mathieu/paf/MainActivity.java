@@ -1,5 +1,6 @@
 package com.mathieu.paf;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.Button;
 public class MainActivity extends ActionBarActivity {
 
     private Button carte = null;
+    private static Context ctx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +24,7 @@ public class MainActivity extends ActionBarActivity {
         carte.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setContext(getBaseContext());
                 Intent carteActivite = new Intent(MainActivity.this, Carte.class);
                 startActivity(carteActivite);
             }
@@ -50,5 +53,13 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private static void setContext(Context ctx) {
+        MainActivity.ctx = ctx;
+    }
+
+    public static Context getContext() {
+        return ctx;
     }
 }

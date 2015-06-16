@@ -1,9 +1,13 @@
 package com.mathieu.paf;
 
+import android.content.Intent;
 import android.location.Location;
 import android.provider.SyncStateContract;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -14,12 +18,24 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class Carte extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private Button positionButton = null;
+    private Location position = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carte);
         setUpMapIfNeeded();
+
+        positionButton = (Button) findViewById(R.id.button);
+        positionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                position = mMap.getMyLocation();
+                Toast.makeText(MainActivity.getContext(), "test", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     @Override
