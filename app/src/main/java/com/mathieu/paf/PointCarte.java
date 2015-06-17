@@ -19,4 +19,23 @@ public class PointCarte {
         this.SNR = SNR;
     }
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public float getPrecision() {
+        return precision;
+    }
+
+    public int getRSSI() {
+        return RSSI;
+    }
+
+    public float getSNR() {
+        return SNR;
+    }
 }

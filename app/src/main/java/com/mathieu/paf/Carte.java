@@ -1,7 +1,9 @@
 package com.mathieu.paf;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Environment;
@@ -19,7 +21,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
@@ -105,7 +110,7 @@ public class Carte extends FragmentActivity {
                             Toast.makeText(MainActivity.getContext(), "Relevé de position : " + lat + ", " + lon, Toast.LENGTH_SHORT).show();
                         }
                         else  {
-                            Toast.makeText(MainActivity.getContext(), "Un marqueur est déjà présent dans le cercle de précision courant", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.getContext(), "Un marqueur est déjà présent dans le cercle de précision courant.", Toast.LENGTH_SHORT).show();
                         }
 
                         /* INUTILE SI PRECISION FONCTIONNELLE
@@ -138,12 +143,34 @@ public class Carte extends FragmentActivity {
                 if (!dossierPAF.exists()) {
                     dossierPAF.mkdirs(); //Si le dossier n'existe pas, on le crée dans la mémoire
                 }
-                AlertDialog.Builder popup = new AlertDialog.Builder(MainActivity.getContext());
+                AlertDialog.Builder popup = new AlertDialog.Builder(Carte.this);
                 popup.setTitle("PAF");
                 popup.setMessage("Veuillez saisir un nom pour la base de donneés :");
-                EditText input = new EditText(MainActivity.getContext());
+                final EditText input = new EditText(MainActivity.getContext());
                 input.requestFocus();
                 popup.setView(input);
+                popup.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!input.getText().toString().matches("")) {
+                            //OK
+                            File fichierSortie = new File(Environment.getExternalStorageDirectory() + "/PAF/" + input.getText().toString()); //Création de la base de données
+                            try {
+                                fichierSortie.createNewFile();
+                                BufferedWriter bw = new BufferedWriter((new FileWriter(Environment.getExternalStorageDirectory() + "/PAF/" + input.getText().toString())));
+                               for (PointCarte pointcarte : listePointsCarte) {
+                                   bw.write(pointcarte.getLatitude()+";"+pointcarte.getLongitude()+";"+pointcarte.getPrecision()+";"+pointcarte.getRSSI()+";"+pointcarte.getSNR());
+                               }
+                                bw.flush();
+                                bw.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Toast.makeText(MainActivity.getContext(), "Enregistrement des données dans : " + input.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+                popup.show();
             }
         });
 
