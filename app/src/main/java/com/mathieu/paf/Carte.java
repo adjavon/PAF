@@ -23,10 +23,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
@@ -161,7 +165,7 @@ public class Carte extends FragmentActivity {
                                 Toast.makeText(MainActivity.getContext(), "Enregistrement des données dans : " + input.getText().toString(), Toast.LENGTH_SHORT).show();
                                 BufferedWriter bw = new BufferedWriter((new FileWriter(Environment.getExternalStorageDirectory() + "/PAF/" + input.getText().toString())));
                                 for (PointCarte pointcarte : listePointsCarte) {
-                                    bw.write(pointcarte.getLatitude()+";"+pointcarte.getLongitude()+";"+pointcarte.getPrecision()+";"+pointcarte.getRSSI()+";"+pointcarte.getSNR()+"\n");
+                                    bw.write(pointcarte.getLatitude()+";"+pointcarte.getLongitude()+";"+pointcarte.getPrecision()+";"+pointcarte.getRSSI()+";"+pointcarte.getSNR()+"\n\n");
                                 }
                                 bw.flush();
                                 bw.close();
@@ -182,7 +186,6 @@ public class Carte extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 //Ouverture d'un explorateur pour sélectionner un fichier
-                // Instantiate the class
                 FileDialog fd = new FileDialog(Carte.this);
                 // Add a listener for capture user action
                 fd.setListener(new FileDialog.ActionListener(){
@@ -190,11 +193,30 @@ public class Carte extends FragmentActivity {
                     {
                         // Test if user select a file
                         if (action == FileDialog.ACTION_SELECTED_FILE) {
-                            Toast.makeText(MainActivity.getContext(), "Fichier sélectionné : "+filePath, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.getContext(), "Chargement de la base de données depuis : "+filePath, Toast.LENGTH_SHORT).show();
+
+                            //Lecture de la BDD
+                            try{
+                                InputStream ips=new FileInputStream(filePath);
+                                InputStreamReader ipsr=new InputStreamReader(ips);
+                                BufferedReader br=new BufferedReader(ipsr);
+                                String ligne;
+                                while ((ligne=br.readLine())!=null){
+                                    System.out.println(ligne);
+                                    String [] parts = ligne.split(";");
+                                    mMap.addMarker(new MarkerOptions().position(new LatLng(Float.parseFloat(parts[0]), Float.parseFloat(parts[1]))).icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal)));
+                                }
+                                br.close();
+                            }
+                            catch (Exception e){
+                                System.out.println(e.toString());
+                            }
+
                         }
                     }});
-                // Show the dialog box
                 fd.selectFileStrict();
+
+
             }
         });
 
