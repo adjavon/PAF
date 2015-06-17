@@ -165,14 +165,14 @@ public class Carte extends FragmentActivity {
                                 Toast.makeText(MainActivity.getContext(), "Enregistrement des données dans : " + input.getText().toString(), Toast.LENGTH_SHORT).show();
                                 BufferedWriter bw = new BufferedWriter((new FileWriter(Environment.getExternalStorageDirectory() + "/PAF/" + input.getText().toString())));
                                 for (PointCarte pointcarte : listePointsCarte) {
-                                    bw.write(pointcarte.getLatitude()+";"+pointcarte.getLongitude()+";"+pointcarte.getPrecision()+";"+pointcarte.getRSSI()+";"+pointcarte.getSNR()+"\n\n");
+                                    bw.write(pointcarte.getLatitude()+";"+pointcarte.getLongitude()+";"+pointcarte.getPrecision()+";"+pointcarte.getRSSI()+";"+pointcarte.getSNR()+'\n');
                                 }
                                 bw.flush();
                                 bw.close();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            Toast.makeText(MainActivity.getContext(), "Base de sonnées enregistrée !", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.getContext(), "Base de données enregistrée !", Toast.LENGTH_SHORT).show();
 
                         }
                     }
@@ -205,13 +205,14 @@ public class Carte extends FragmentActivity {
                                     System.out.println(ligne);
                                     String [] parts = ligne.split(";");
                                     mMap.addMarker(new MarkerOptions().position(new LatLng(Float.parseFloat(parts[0]), Float.parseFloat(parts[1]))).icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal)));
+                                    //Ajouter les points à la liste listePoints
                                 }
                                 br.close();
                             }
                             catch (Exception e){
                                 System.out.println(e.toString());
                             }
-
+                            Toast.makeText(MainActivity.getContext(), "Chargement terminé !", Toast.LENGTH_SHORT).show();
                         }
                     }});
                 fd.selectFileStrict();
