@@ -17,7 +17,6 @@ public class TeleListener extends PhoneStateListener {
     private String callState, imei, plmn, operateur, networkType;
     private boolean roaming;
     private int signalStrength;
-    private TelephonyManager telephonyManager;
     //les RSSI, CID et LAC des voisins
     private int[][] neighborCells;
 
@@ -25,6 +24,7 @@ public class TeleListener extends PhoneStateListener {
     public String getCallState(){
         return callState;
     }
+    /*
     public String getImei(){
         return imei;
     }
@@ -33,8 +33,9 @@ public class TeleListener extends PhoneStateListener {
     }
     public String getOperateur(){
         return operateur;
-    }
-    public String getNetworkType(){
+    }*/
+
+    public String getNetworkVoix(){
         return networkType;
     }
     public String getRoaming(){
@@ -42,6 +43,7 @@ public class TeleListener extends PhoneStateListener {
             return "true";
         else return "false";
     }
+
     public int getSignalStrength(){
         return signalStrength;
     }
@@ -52,15 +54,25 @@ public class TeleListener extends PhoneStateListener {
     //les setters
 
     //ne pas utiliser en dehors
-    public void setCallState(String state){
-        callState = state;
+    public void setCallState(int state){
+        switch (state) {
+            case TelephonyManager.CALL_STATE_IDLE:
+                // CALL_STATE_IDLE;
+                callState="Idle";
+                break;
+            case TelephonyManager.CALL_STATE_OFFHOOK:
+                // CALL_STATE_OFFHOOK;
+               callState="Offhook";
+                break;
+            case TelephonyManager.CALL_STATE_RINGING:
+                // CALL_STATE_RINGING
+                callState="Ringing";
+                break;
+            default:
+                break;
+        }
     }
-
-    //à faire une seule fois, au début
-    public void setImei(){
-        imei = telephonyManager.getDeviceSoftwareVersion();
-    }
-
+    /*
     //à faire toutes les demi secondes
     public void setPlmn(){
         plmn = telephonyManager.getNetworkOperator();
@@ -70,10 +82,10 @@ public class TeleListener extends PhoneStateListener {
     public void setOperateur(){
         operateur= telephonyManager.getNetworkOperatorName();
     }
+    */
 
     //à faire toutes les demi secondes
-    public void setNetworkType(){
-        int netType = telephonyManager.getNetworkType();
+    public void setNetworkVoix(int netType){
         switch (netType) {
             //On peut rajouter d'autres types de réseau dans le case
             case TelephonyManager.NETWORK_TYPE_EDGE:
@@ -90,10 +102,12 @@ public class TeleListener extends PhoneStateListener {
                 break;
         }
     }
+
+    /*
     //à faire toutes les demi secondes
     public void setRoaming(){
         roaming = telephonyManager.isNetworkRoaming();
-    }
+    }*/
 
     //ne pas utiliser en dehors
     public void setSignalStrength(int strength){
@@ -103,24 +117,26 @@ public class TeleListener extends PhoneStateListener {
     //les méthodes de listener
 
     //Call State
-    @Override
+    //@Override
     public void onCallStateChanged(int state, String incomingNumber) {
-        super.onCallStateChanged(state, incomingNumber);
-        switch (state) {
-            case TelephonyManager.CALL_STATE_IDLE:
-                // CALL_STATE_IDLE;
-                setCallState("Idle");
-                break;
-            case TelephonyManager.CALL_STATE_OFFHOOK:
-                // CALL_STATE_OFFHOOK;
-                setCallState("Offhook");
-                break;
-            case TelephonyManager.CALL_STATE_RINGING:
-                // CALL_STATE_RINGING
-                setCallState("Ringing");
-                break;
-            default:
-                break;
+            super.onCallStateChanged(state, incomingNumber);
+
+        // j'utilise ceci dans setCallState
+            switch (state) {
+                case TelephonyManager.CALL_STATE_IDLE:
+                    // CALL_STATE_IDLE;
+                    setCallState(TelephonyManager.CALL_STATE_IDLE);
+                    break;
+                case TelephonyManager.CALL_STATE_OFFHOOK:
+                    // CALL_STATE_OFFHOOK;
+                    setCallState(TelephonyManager.CALL_STATE_OFFHOOK);
+                    break;
+                case TelephonyManager.CALL_STATE_RINGING:
+                    // CALL_STATE_RINGING
+                    setCallState(TelephonyManager.CALL_STATE_RINGING);
+                    break;
+                default:
+                    break;
         }
     }
     //Changement de RSSI
@@ -136,18 +152,17 @@ public class TeleListener extends PhoneStateListener {
     public void onCellInfoChanged(List<CellInfo> cellInfo){
         //super.onCellInfoChanged(cellInfo); --> impossible sur cette API
     }
+
     //all about neighbor cells
-    public void setNeighborCells(){
-        List<NeighboringCellInfo> neighboringCellInfos = telephonyManager.getNeighboringCellInfo();
+    public void setNeighborCells(List<NeighboringCellInfo> neighboringCellInfos){
         int n = neighboringCellInfos.size() -1;
-        int k = 0;
-        for(NeighboringCellInfo neighbor: neighboringCellInfos){
+        for(int k=0; k<n; k++){
                //Créer une matrice
+            NeighboringCellInfo neighbor = neighboringCellInfos.get(k);
             neighborCells[k][1] = neighbor.getRssi();
             neighborCells[k][2] = neighbor.getCid();
             neighborCells[k][3] = neighbor.getLac();
-            k++;
         }
     }
-
+    /**/
 }

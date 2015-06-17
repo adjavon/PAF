@@ -9,15 +9,19 @@ public class PhoneInfo {
     private TeleListener teleListener;
     private SignalStrength signalStrength;
 
-    public void initialize(){
-        teleListener.setImei();
+    public TeleListener getTeleListener(){
+        return teleListener;
     }
-    public void update(){
+
+    /*public void initialize(){
+        teleListener.setImei();
+    }*/
+    /*public void update(){
         teleListener.setNetworkType();
         teleListener.setPlmn();
         teleListener.setOperateur();
         teleListener.setRoaming();
         teleListener.onSignalStrengthsChanged(signalStrength);
         //teleListener.onCallStateChanged(); call State changed à modifier
-    }
+    }*/
 }
