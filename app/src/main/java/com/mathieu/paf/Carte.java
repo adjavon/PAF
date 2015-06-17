@@ -1,13 +1,17 @@
 package com.mathieu.paf;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
+import android.os.Environment;
 import android.provider.SyncStateContract;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -15,6 +19,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
@@ -27,14 +32,16 @@ public class Carte extends FragmentActivity {
     private Location position = null;
     private boolean toggle = false;
     private double lat;
-    private double oldLat=0;
+    private double oldLat = 0;
     private double lon;
-    private double oldLon=0;
+    private double oldLon = 0;
+    private float precision = 0;
     private android.os.Handler customHandler;
     private Runnable myRunnable;
     private Button save = null;
     private Button load = null;
-    private ArrayList<PointGPS> listePoints = new ArrayList<PointGPS>(); //initialisation de la liste de points GPS
+    private ArrayList<PointCarte> listePointsCarte = new ArrayList<PointCarte>(); //initialisation de la liste de points GPS
+    private ArrayList<Location> listePosition = new ArrayList<Location>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +57,8 @@ public class Carte extends FragmentActivity {
                 if (position != null) {
                     lat = position.getLatitude();
                     lon = position.getLongitude();
-                    Toast.makeText(MainActivity.getContext(), "Position actuelle : " + lat + ", " + lon, Toast.LENGTH_SHORT).show();
+                    precision = position.getAccuracy();
+                    Toast.makeText(MainActivity.getContext(), "Position actuelle : " + lat + ", " + lon+"  Précision : "+precision, Toast.LENGTH_SHORT).show();
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 16));
                 }
             }
@@ -82,19 +90,37 @@ public class Carte extends FragmentActivity {
                 if (toggle) {
                     position = mMap.getMyLocation();
                     if (position != null) { //Permet d'éviter le crash de l'appli
-                        lat = position.getLatitude();
-                        lon = position.getLongitude();
-                        Toast.makeText(MainActivity.getContext(), "Relevé de position : " + lat + ", " + lon, Toast.LENGTH_SHORT).show();
+                        float distanceMin = 100000000;
+                        for (Location pos : listePosition) {
+                            if (position.distanceTo(pos) < distanceMin) {
+                                distanceMin = position.distanceTo(pos);
+                            }
+                        }
+                        if (position.getAccuracy() < distanceMin) {
+                            lat = position.getLatitude();
+                            lon = position.getLongitude();
+                            listePosition.add(position); //On ajoute la dernière postion à la liste des positions relevées
+                            listePointsCarte.add(new PointCarte(lat, lon, position.getAccuracy(), 1, 1));
+                            mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)));
+                            Toast.makeText(MainActivity.getContext(), "Relevé de position : " + lat + ", " + lon, Toast.LENGTH_SHORT).show();
+                        }
+                        else  {
+                            Toast.makeText(MainActivity.getContext(), "Un marqueur est déjà présent dans le cercle de précision courant", Toast.LENGTH_SHORT).show();
+                        }
+
+                        /* INUTILE SI PRECISION FONCTIONNELLE
 
                         //Placement des marqueurs
                         if ((Math.abs(lat - oldLat) > Math.pow(10, -4)) || (Math.abs(lon - oldLon) > Math.pow(10, -4))) {
                             //Si la variation de position est suffisante : 10^(-4) ici soit environ 10 metres
                             mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)));
-                            listePoints.add(new PointGPS(lat, lon, 1)); //1 sera à remplacer par la valeur courante du RSSI
+                            listePoints.add(new PointGPS(lat, lon,1, 1)); //1 sera à remplacer par la valeur courante du RSSI
                         }
 
                         oldLat = lat;
                         oldLon = lon;
+
+                        */
                     }
                 }
 
@@ -103,11 +129,21 @@ public class Carte extends FragmentActivity {
         };
         myRunnable.run();
 
-       save = (Button) findViewById(R.id.save);
+        save = (Button) findViewById(R.id.save);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Création du dossier et du fichier : on fait une boucle sur listePoints
+                File dossierPAF = new File(Environment.getExternalStorageDirectory() + "/PAF");
+                if (!dossierPAF.exists()) {
+                    dossierPAF.mkdirs(); //Si le dossier n'existe pas, on le crée dans la mémoire
+                }
+                AlertDialog.Builder popup = new AlertDialog.Builder(MainActivity.getContext());
+                popup.setTitle("PAF");
+                popup.setMessage("Veuillez saisir un nom pour la base de donneés :");
+                EditText input = new EditText(MainActivity.getContext());
+                input.requestFocus();
+                popup.setView(input);
             }
         });
 
@@ -162,7 +198,7 @@ public class Carte extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(48.826523, 2.346354)).title("Télécom ParisTech"));
+        //mMap.addMarker(new MarkerOptions().position(new LatLng(48.826523, 2.346354)).title("Télécom ParisTech"));
 
         mMap.setMyLocationEnabled(true);
 
