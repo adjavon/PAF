@@ -15,6 +15,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
@@ -33,6 +34,7 @@ public class Carte extends FragmentActivity {
     private Runnable myRunnable;
     private Button save = null;
     private Button load = null;
+    private ArrayList<PointGPS> listePoints = new ArrayList<PointGPS>(); //initialisation de la liste de points GPS
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,7 @@ public class Carte extends FragmentActivity {
                         if ((Math.abs(lat - oldLat) > Math.pow(10, -4)) || (Math.abs(lon - oldLon) > Math.pow(10, -4))) {
                             //Si la variation de position est suffisante : 10^(-4) ici soit environ 10 metres
                             mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)));
+                            listePoints.add(new PointGPS(lat, lon, 1)); //1 sera à remplacer par la valeur courante du RSSI
                         }
 
                         oldLat = lat;
@@ -104,7 +107,7 @@ public class Carte extends FragmentActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Création du dossier et du fichier
+                //Création du dossier et du fichier : on fait une boucle sur listePoints
             }
         });
 
