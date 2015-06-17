@@ -3,6 +3,7 @@ package com.mathieu.paf;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationListener;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -106,7 +108,7 @@ public class Carte extends FragmentActivity {
                             lon = position.getLongitude();
                             listePosition.add(position); //On ajoute la dernière postion à la liste des positions relevées
                             listePointsCarte.add(new PointCarte(lat, lon, position.getAccuracy(), 1, 1));
-                            mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)));
+                            mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal)));
                             Toast.makeText(MainActivity.getContext(), "Relevé de position : " + lat + ", " + lon, Toast.LENGTH_SHORT).show();
                         }
                         else  {
@@ -158,7 +160,7 @@ public class Carte extends FragmentActivity {
                                 fichierSortie.createNewFile();
                                 BufferedWriter bw = new BufferedWriter((new FileWriter(Environment.getExternalStorageDirectory() + "/PAF/" + input.getText().toString())));
                                for (PointCarte pointcarte : listePointsCarte) {
-                                   bw.write(pointcarte.getLatitude()+";"+pointcarte.getLongitude()+";"+pointcarte.getPrecision()+";"+pointcarte.getRSSI()+";"+pointcarte.getSNR());
+                                   bw.write(pointcarte.getLatitude()+";"+pointcarte.getLongitude()+";"+pointcarte.getPrecision()+";"+pointcarte.getRSSI()+";"+pointcarte.getSNR()+"\n");
                                }
                                 bw.flush();
                                 bw.close();
@@ -226,8 +228,9 @@ public class Carte extends FragmentActivity {
      */
     private void setUpMap() {
         //mMap.addMarker(new MarkerOptions().position(new LatLng(48.826523, 2.346354)).title("Télécom ParisTech"));
+        //mMap.addMarker(new MarkerOptions().position(new LatLng(48.826523, 2.346354)).title("Télécom ParisTech").icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal)));
 
-        mMap.setMyLocationEnabled(true);
+                mMap.setMyLocationEnabled(true);
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.826523, 2.346354), 16));
     }
