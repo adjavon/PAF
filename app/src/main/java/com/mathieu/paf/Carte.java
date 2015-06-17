@@ -158,16 +158,17 @@ public class Carte extends FragmentActivity {
                             File fichierSortie = new File(Environment.getExternalStorageDirectory() + "/PAF/" + input.getText().toString()); //Création de la base de données
                             try {
                                 fichierSortie.createNewFile();
+                                Toast.makeText(MainActivity.getContext(), "Enregistrement des données dans : " + input.getText().toString(), Toast.LENGTH_SHORT).show();
                                 BufferedWriter bw = new BufferedWriter((new FileWriter(Environment.getExternalStorageDirectory() + "/PAF/" + input.getText().toString())));
-                               for (PointCarte pointcarte : listePointsCarte) {
-                                   bw.write(pointcarte.getLatitude()+";"+pointcarte.getLongitude()+";"+pointcarte.getPrecision()+";"+pointcarte.getRSSI()+";"+pointcarte.getSNR()+"\n");
-                               }
+                                for (PointCarte pointcarte : listePointsCarte) {
+                                    bw.write(pointcarte.getLatitude()+";"+pointcarte.getLongitude()+";"+pointcarte.getPrecision()+";"+pointcarte.getRSSI()+";"+pointcarte.getSNR()+"\n");
+                                }
                                 bw.flush();
                                 bw.close();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            Toast.makeText(MainActivity.getContext(), "Enregistrement des données dans : " + input.getText().toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.getContext(), "Base de sonnées enregistrée !", Toast.LENGTH_SHORT).show();
 
                         }
                     }
@@ -181,6 +182,19 @@ public class Carte extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 //Ouverture d'un explorateur pour sélectionner un fichier
+                // Instantiate the class
+                FileDialog fd = new FileDialog(Carte.this);
+                // Add a listener for capture user action
+                fd.setListener(new FileDialog.ActionListener(){
+                    public void userAction(int action, String filePath)
+                    {
+                        // Test if user select a file
+                        if (action == FileDialog.ACTION_SELECTED_FILE) {
+                            Toast.makeText(MainActivity.getContext(), "Fichier sélectionné : "+filePath, Toast.LENGTH_SHORT).show();
+                        }
+                    }});
+                // Show the dialog box
+                fd.selectFileStrict();
             }
         });
 
@@ -230,7 +244,7 @@ public class Carte extends FragmentActivity {
         //mMap.addMarker(new MarkerOptions().position(new LatLng(48.826523, 2.346354)).title("Télécom ParisTech"));
         //mMap.addMarker(new MarkerOptions().position(new LatLng(48.826523, 2.346354)).title("Télécom ParisTech").icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal)));
 
-                mMap.setMyLocationEnabled(true);
+        mMap.setMyLocationEnabled(true);
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.826523, 2.346354), 16));
     }
