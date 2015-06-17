@@ -18,7 +18,18 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:text="Mode auto : OFF"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/auto"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/auto"
+        android:layout_alignParentLeft="true"
+        android:text="Position"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/button"
         />
 
     <Button
@@ -26,8 +37,19 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:text="Position"
-        android:id="@+id/button"
+        android:text="Enregistrer données"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/save"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/save"
+        android:layout_alignParentRight="true"
+        android:text="Charger données"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/load"
         />
 
 </RelativeLayout>

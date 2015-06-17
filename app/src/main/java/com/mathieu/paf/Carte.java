@@ -31,6 +31,8 @@ public class Carte extends FragmentActivity {
     private double oldLon=0;
     private android.os.Handler customHandler;
     private Runnable myRunnable;
+    private Button save = null;
+    private Button load = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +45,12 @@ public class Carte extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 position = mMap.getMyLocation();
-                lat = position.getLatitude();
-                lon = position.getLongitude();
-                Toast.makeText(MainActivity.getContext(), "Position actuelle : " + lat + ", " + lon, Toast.LENGTH_SHORT).show();
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 16));
+                if (position != null) {
+                    lat = position.getLatitude();
+                    lon = position.getLongitude();
+                    Toast.makeText(MainActivity.getContext(), "Position actuelle : " + lat + ", " + lon, Toast.LENGTH_SHORT).show();
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 16));
+                }
             }
         });
 
@@ -75,28 +79,47 @@ public class Carte extends FragmentActivity {
 
                 if (toggle) {
                     position = mMap.getMyLocation();
-                    lat = position.getLatitude();
-                    lon = position.getLongitude();
-                    Toast.makeText(MainActivity.getContext(), "Relevé de position : " + lat + ", " + lon, Toast.LENGTH_SHORT).show();
+                    if (position != null) { //Permet d'éviter le crash de l'appli
+                        lat = position.getLatitude();
+                        lon = position.getLongitude();
+                        Toast.makeText(MainActivity.getContext(), "Relevé de position : " + lat + ", " + lon, Toast.LENGTH_SHORT).show();
 
-                    //Placement des marqueurs
-                    if ((Math.abs(lat-oldLat) > Math.pow(10, -4)) || (Math.abs(lon-oldLon) > Math.pow(10, -4))) {
-                        //Si la variation de position est suffisante : 10^(-4) ici soit environ 10 metres
-                        mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)));
+                        //Placement des marqueurs
+                        if ((Math.abs(lat - oldLat) > Math.pow(10, -4)) || (Math.abs(lon - oldLon) > Math.pow(10, -4))) {
+                            //Si la variation de position est suffisante : 10^(-4) ici soit environ 10 metres
+                            mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)));
+                        }
+
+                        oldLat = lat;
+                        oldLon = lon;
                     }
-
-                    oldLat = lat;
-                    oldLon = lon;
                 }
 
                 customHandler.postDelayed(this, 2000); //Délai entre deux relevés GPS
             }
         };
         myRunnable.run();
+
+       save = (Button) findViewById(R.id.save);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Création du dossier et du fichier
+            }
+        });
+
+        load = (Button) findViewById(R.id.load);
+        load.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Ouverture d'un explorateur pour sélectionner un fichier
+            }
+        });
+
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume() { //Il faut aussi écrire onPause et onStop pour arrêter la boucle sur la runnable : juste avec le toggle ?
         super.onResume();
         setUpMapIfNeeded();
     }
