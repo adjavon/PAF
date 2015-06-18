@@ -51,6 +51,7 @@ public class Carte extends FragmentActivity {
     private Runnable myRunnable;
     private Button save = null;
     private Button load = null;
+    private String fichierCourant = "";
     private ArrayList<PointCarte> listePointsCarte = new ArrayList<PointCarte>(); //initialisation de la liste de points GPS
     private ArrayList<Location> listePosition = new ArrayList<Location>();
 
@@ -116,7 +117,7 @@ public class Carte extends FragmentActivity {
                             Toast.makeText(MainActivity.getContext(), "Relevé de position : " + lat + ", " + lon, Toast.LENGTH_SHORT).show();
                         }
                         else  {
-                            Toast.makeText(MainActivity.getContext(), "Un marqueur est déjà présent dans le cercle de précision courant.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.getContext(), "Un marqueur est déjà présent dans le disque de précision courant.", Toast.LENGTH_SHORT).show();
                         }
 
                         /* INUTILE SI PRECISION FONCTIONNELLE
@@ -153,6 +154,7 @@ public class Carte extends FragmentActivity {
                 popup.setTitle("PAF");
                 popup.setMessage("Veuillez saisir un nom pour la base de donneés :");
                 final EditText input = new EditText(MainActivity.getContext());
+                input.setText(fichierCourant); //On affiche le nom du fichier précédemment chargé
                 input.requestFocus();
                 popup.setView(input);
                 popup.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -163,7 +165,7 @@ public class Carte extends FragmentActivity {
                             try {
                                 fichierSortie.createNewFile();
                                 Toast.makeText(MainActivity.getContext(), "Enregistrement des données dans : " + input.getText().toString(), Toast.LENGTH_SHORT).show();
-                                BufferedWriter bw = new BufferedWriter((new FileWriter(Environment.getExternalStorageDirectory() + "/PAF/" + input.getText().toString())));
+                                BufferedWriter bw = new BufferedWriter((new FileWriter(Environment.getExternalStorageDirectory() + "/PAF/" + input.getText().toString(), true))); //Permet de concaténer avec le fichier précédent.
                                 for (PointCarte pointcarte : listePointsCarte) {
                                     bw.write(pointcarte.getLatitude()+";"+pointcarte.getLongitude()+";"+pointcarte.getPrecision()+";"+pointcarte.getRSSI()+";"+pointcarte.getSNR()+'\n');
                                 }
@@ -194,6 +196,7 @@ public class Carte extends FragmentActivity {
                         // Test if user select a file
                         if (action == FileDialog.ACTION_SELECTED_FILE) {
                             Toast.makeText(MainActivity.getContext(), "Chargement de la base de données depuis : "+filePath, Toast.LENGTH_SHORT).show();
+                            fichierCourant = filePath.split("/")[filePath.split("/").length]; //Prend la dernière partie de l'Array
 
                             //Lecture de la BDD
                             try{
