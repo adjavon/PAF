@@ -2,16 +2,10 @@ package com.mathieu.paf;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Environment;
-import android.provider.SyncStateContract;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +16,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -105,7 +98,7 @@ public class Carte extends FragmentActivity {
                 if (toggle) {
                     position = mMap.getMyLocation();
                     if (position != null) { //Permet d'éviter le crash de l'appli
-                        float distanceMin = 100000000;
+                        float distanceMin = 100000000; //On initialise avec une valeur importante pour etre sur que la premiere itération trouvera une valeur inférieure
                         for (Location pos : listePosition) {
                             if (position.distanceTo(pos) < distanceMin) {
                                 distanceMin = position.distanceTo(pos);
@@ -122,20 +115,6 @@ public class Carte extends FragmentActivity {
                         else  {
                             Toast.makeText(MainActivity.getContext(), "Un marqueur est déjà présent dans le disque de précision courant.", Toast.LENGTH_SHORT).show();
                         }
-
-                        /* INUTILE SI PRECISION FONCTIONNELLE
-
-                        //Placement des marqueurs
-                        if ((Math.abs(lat - oldLat) > Math.pow(10, -4)) || (Math.abs(lon - oldLon) > Math.pow(10, -4))) {
-                            //Si la variation de position est suffisante : 10^(-4) ici soit environ 10 metres
-                            mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)));
-                            listePoints.add(new PointGPS(lat, lon,1, 1)); //1 sera à remplacer par la valeur courante du RSSI
-                        }
-
-                        oldLat = lat;
-                        oldLon = lon;
-
-                        */
                     }
                 }
 
@@ -230,9 +209,16 @@ public class Carte extends FragmentActivity {
     }
 
     @Override
+    protected void onStop() {
+        //On pourra décider d'arrêter la boucle de la Runnable ici
+        //customHandler.removeCallbacks(myRunnable);
+    }
+
+    @Override
     protected void onResume() { //Il faut aussi écrire onPause et onStop pour arrêter la boucle sur la runnable : juste avec le toggle ?
         super.onResume();
         setUpMapIfNeeded();
+        //Et de la reprendre ici avec un .run()
     }
 
     /**
