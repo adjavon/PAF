@@ -73,6 +73,9 @@ public class Carte extends FragmentActivity {
                     Toast.makeText(MainActivity.getContext(), "Position actuelle : " + lat + ", " + lon+"  Précision : "+precision, Toast.LENGTH_SHORT).show();
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 16));
                 }
+                else {
+                    Toast.makeText(MainActivity.getContext(), "La localisation GPS n'est pas encore disponnible.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -196,7 +199,7 @@ public class Carte extends FragmentActivity {
                         // Test if user select a file
                         if (action == FileDialog.ACTION_SELECTED_FILE) {
                             Toast.makeText(MainActivity.getContext(), "Chargement de la base de données depuis : "+filePath, Toast.LENGTH_SHORT).show();
-                            fichierCourant = filePath.split("/")[filePath.split("/").length]; //Prend la dernière partie de l'Array
+                            fichierCourant = filePath.split("/")[filePath.split("/").length - 1]; //Prend la dernière partie de l'Array
 
                             //Lecture de la BDD
                             try{
