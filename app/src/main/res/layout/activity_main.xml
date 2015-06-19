@@ -880,7 +880,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Voir la carte"
+            android:text="Menu"
             android:id="@+id/button"
             android:layout_below="@id/textView53"
             android:layout_marginTop="5dp"

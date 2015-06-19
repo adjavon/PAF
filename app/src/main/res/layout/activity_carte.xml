@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/carte_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,6 +12,16 @@
         tools:context="com.mathieu.paf.Carte"
         android:name="com.google.android.gms.maps.SupportMapFragment" />
 
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:text="~"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/nav"
+        />
 
     <Button
         android:layout_width="wrap_content"

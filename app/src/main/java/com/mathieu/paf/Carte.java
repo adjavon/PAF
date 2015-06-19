@@ -2,13 +2,17 @@ package com.mathieu.paf;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,6 +51,7 @@ public class Carte extends FragmentActivity {
     private String fichierCourant = "";
     private ArrayList<PointCarte> listePointsCarte = new ArrayList<PointCarte>(); //initialisation de la liste de points GPS
     private ArrayList<Location> listePosition = new ArrayList<Location>();
+    private Button nav = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,15 +63,14 @@ public class Carte extends FragmentActivity {
         positionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                position = mMap.getMyLocation();
+                position = mMap.getMyLocation(); //NullPointer ici, étrange......
                 if (position != null) {
                     lat = position.getLatitude();
                     lon = position.getLongitude();
                     precision = position.getAccuracy();
-                    Toast.makeText(MainActivity.getContext(), "Position actuelle : " + lat + ", " + lon+"  Précision : "+precision, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.getContext(), "Position actuelle : " + lat + ", " + lon + "  Précision : " + precision, Toast.LENGTH_SHORT).show();
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 16));
-                }
-                else {
+                } else {
                     Toast.makeText(MainActivity.getContext(), "La localisation GPS n'est pas encore disponnible.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -149,7 +153,7 @@ public class Carte extends FragmentActivity {
                                 Toast.makeText(MainActivity.getContext(), "Enregistrement des données dans : " + input.getText().toString(), Toast.LENGTH_SHORT).show();
                                 BufferedWriter bw = new BufferedWriter((new FileWriter(Environment.getExternalStorageDirectory() + "/PAF/" + input.getText().toString(), true))); //Permet de concaténer avec le fichier précédent.
                                 for (PointCarte pointcarte : listePointsCarte) {
-                                    bw.write(pointcarte.getLatitude()+";"+pointcarte.getLongitude()+";"+pointcarte.getPrecision()+";"+pointcarte.getRSSI()+";"+pointcarte.getSNR()+'\n');
+                                    bw.write(pointcarte.getLatitude() + ";" + pointcarte.getLongitude() + ";" + pointcarte.getPrecision() + ";" + pointcarte.getRSSI() + ";" + pointcarte.getSNR() + '\n');
                                 }
                                 bw.flush();
                                 bw.close();
@@ -172,39 +176,50 @@ public class Carte extends FragmentActivity {
                 //Ouverture d'un explorateur pour sélectionner un fichier
                 FileDialog fd = new FileDialog(Carte.this);
                 // Add a listener for capture user action
-                fd.setListener(new FileDialog.ActionListener(){
-                    public void userAction(int action, String filePath)
-                    {
+                fd.setListener(new FileDialog.ActionListener() {
+                    public void userAction(int action, String filePath) {
                         // Test if user select a file
                         if (action == FileDialog.ACTION_SELECTED_FILE) {
-                            Toast.makeText(MainActivity.getContext(), "Chargement de la base de données depuis : "+filePath, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.getContext(), "Chargement de la base de données depuis : " + filePath, Toast.LENGTH_SHORT).show();
                             fichierCourant = filePath.split("/")[filePath.split("/").length - 1]; //Prend la dernière partie de l'Array
 
                             //Lecture de la BDD
-                            try{
-                                InputStream ips=new FileInputStream(filePath);
-                                InputStreamReader ipsr=new InputStreamReader(ips);
-                                BufferedReader br=new BufferedReader(ipsr);
+                            try {
+                                InputStream ips = new FileInputStream(filePath);
+                                InputStreamReader ipsr = new InputStreamReader(ips);
+                                BufferedReader br = new BufferedReader(ipsr);
                                 String ligne;
-                                while ((ligne=br.readLine())!=null){
+                                while ((ligne = br.readLine()) != null) {
                                     System.out.println(ligne);
-                                    String [] parts = ligne.split(";");
+                                    String[] parts = ligne.split(";");
                                     mMap.addMarker(new MarkerOptions().position(new LatLng(Float.parseFloat(parts[0]), Float.parseFloat(parts[1]))).icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal)));
                                     //Ajouter les points à la liste listePoints
                                 }
                                 br.close();
-                            }
-                            catch (Exception e){
+                            } catch (Exception e) {
                                 System.out.println(e.toString());
                             }
                             Toast.makeText(MainActivity.getContext(), "Chargement terminé !", Toast.LENGTH_SHORT).show();
                         }
-                    }});
+                    }
+                });
                 fd.selectFileStrict();
 
 
             }
         });
+
+
+        nav = (Button) findViewById(R.id.button);
+        nav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Récupérer le layout du drawer
+                //mDrawerLayout.openDrawer(Gravity.LEFT);
+                //Ensuite, test sur le clic. Si 0, on ferme l'activité, si 2, on ouvre indoor
+            }
+        });
+
 
     }
 
