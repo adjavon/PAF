@@ -116,29 +116,6 @@ public class TeleListener extends PhoneStateListener {
 
     //les méthodes de listener
 
-    //Call State
-    //@Override
-    public void onCallStateChanged(int state, String incomingNumber) {
-            super.onCallStateChanged(state, incomingNumber);
-
-        // j'utilise ceci dans setCallState
-            switch (state) {
-                case TelephonyManager.CALL_STATE_IDLE:
-                    // CALL_STATE_IDLE;
-                    setCallState(TelephonyManager.CALL_STATE_IDLE);
-                    break;
-                case TelephonyManager.CALL_STATE_OFFHOOK:
-                    // CALL_STATE_OFFHOOK;
-                    setCallState(TelephonyManager.CALL_STATE_OFFHOOK);
-                    break;
-                case TelephonyManager.CALL_STATE_RINGING:
-                    // CALL_STATE_RINGING
-                    setCallState(TelephonyManager.CALL_STATE_RINGING);
-                    break;
-                default:
-                    break;
-        }
-    }
     //Changement de RSSI
     public void onSignalStrengthChanged(SignalStrength strength){
         super.onSignalStrengthsChanged(strength);
