@@ -211,7 +211,8 @@ public class Carte extends FragmentActivity {
     @Override
     protected void onStop() {
         //On pourra décider d'arrêter la boucle de la Runnable ici
-        //customHandler.removeCallbacks(myRunnable);
+        customHandler.removeCallbacks(myRunnable);
+        super.onStop();
     }
 
     @Override
@@ -219,6 +220,7 @@ public class Carte extends FragmentActivity {
         super.onResume();
         setUpMapIfNeeded();
         //Et de la reprendre ici avec un .run()
+        myRunnable.run();
     }
 
     /**

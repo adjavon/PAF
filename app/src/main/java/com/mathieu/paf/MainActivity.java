@@ -49,7 +49,7 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        /*
+
         carte = (Button) findViewById(R.id.button);
         carte.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,7 +59,7 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(carteActivite);
             }
         });
-        */
+
 
     }
 
@@ -72,14 +72,18 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void addDrawerItems() {
-        String[] osArray = { "Android", "iOS", "Windows", "OS X", "Linux" };
-        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
+        String[] menuArray = { "Statistiques", "Carte", "Indoor"};
+        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, menuArray);
         mDrawerList.setAdapter(mAdapter);
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(MainActivity.this, "Time for an upgrade! " + position, Toast.LENGTH_SHORT).show();
+                if (position == 1) {
+                    Intent carteActivite = new Intent(MainActivity.this, Carte.class);
+                    startActivity(carteActivite);
+                }
             }
         });
     }
@@ -90,7 +94,7 @@ public class MainActivity extends ActionBarActivity {
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle("Navigation!");
+                getSupportActionBar().setTitle("Menu");
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
