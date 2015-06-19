@@ -39,6 +39,10 @@
             android:name=".Carte"
             android:label="@string/title_activity_carte" >
         </activity>
+        <activity
+            android:name=".FragmentNavigationDrawer"
+            android:label="@string/title_activity_fragment_navigation_drawer" >
+        </activity>
     </application>
 
 </manifest>
