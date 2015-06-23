@@ -42,7 +42,6 @@ public class MainActivity extends ActionBarActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private String mActivityTitle;
 
-    private Button carte = null;
     private static Context ctx;
 
     private TeleListener phone;
@@ -85,17 +84,6 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-
-
-    }
-
-    private static void setContext(Context ctx) {
-        MainActivity.ctx = ctx;
-    }
-
-    public static Context getContext() {
-        return ctx;
-
         //avoir accès aux informations concernant la téléphonie
         final TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -104,7 +92,6 @@ public class MainActivity extends ActionBarActivity {
         imei.setText(telephonyManager.getDeviceId() + "/" + telephonyManager.getDeviceSoftwareVersion());
 
         //Initialisation des listeners pour que les informations soient dynamiques
-        TeleListener stateListener = new TeleListener();
         PhoneStateListener phoneStateListener = new PhoneStateListener() {
 
             // Appelée quand est déclenché l'évènement LISTEN_CALL_STATE
@@ -133,12 +120,12 @@ public class MainActivity extends ActionBarActivity {
             }
 
             // Appelée quand est déclenché l'évènement LISTEN_SIGNAL_STRENGTHS
-            //@Override //fait chier
+            //@Override
             public void onSignalStrengthsChanged(SignalStrength signalStrength) {
-                //on modifie ici ce qui concerne la cellule principale ..?
+                //on modifie ici ce qui concerne la cellule principale
 
-                 asu =(TextView) findViewById(R.id.ASU);
-                 asu.setText(Integer.toString(signalStrength.getGsmSignalStrength()) +"/" + Integer.toString(2 * signalStrength.getGsmSignalStrength() - 113) +"dBm");
+                asu =(TextView) findViewById(R.id.ASU);
+                asu.setText(Integer.toString(signalStrength.getGsmSignalStrength()) +"/" + Integer.toString(2 * signalStrength.getGsmSignalStrength() - 113) +"dBm");
 
                 lac =(TextView) findViewById(R.id.LAC);
                 GsmCellLocation cellLocation = (GsmCellLocation) telephonyManager.getCellLocation();
@@ -155,29 +142,32 @@ public class MainActivity extends ActionBarActivity {
 
                 TextView snr = (TextView) findViewById(R.id.SNR);
 
-                if(rssi5.getText().toString().equals("--")|rssi5.getText().toString().equals("N/A")){
+                /*if(rssi5.getText().toString().equals("--")|rssi5.getText().toString().equals("N/A")){
                     snr.setText("N/A");
                 }
                 else if (rssi6.getText().toString().equals("--")|rssi6.getText().toString().equals("N/A")){
                     //avec la somme de 1 à 5
                     int a= Integer.parseInt(rssi1.getText().toString()), b= Integer.parseInt(rssi2.getText().toString()), c= Integer.parseInt(rssi3.getText().toString()), d= Integer.parseInt(rssi4.getText().toString()), e= Integer.parseInt(rssi5.getText().toString());
-                    double sir = (10^(30*4))*(10^signalStrength.getGsmSignalStrength()/(10^a+10^b+10^c+10^d+10^e));
+                    double sir = (10^signalStrength.getGsmSignalStrength()/(10^a+10^b+10^c+10^d+10^e));
                     sir = 10*Math.log(sir);
-                    snr.setText(Integer.toString(sir));
+                    int s = (int) sir;
+                    snr.setText(Integer.toString(s) +"dB");
                     //Ici on charge la puissance de signal pour afficher les marqueurs
-                    // Carte.puissanceSignal = -201; //200 étant le seuil à partir duquel on considère qu'on est au niveau 1
+                    //Carte.puissanceSignal = s; //si int
+                    //Carte.puissanceSignal = sir; //si double
                 }
                 else
                 {
                     //la somme de 1 à 6
                     int a= Integer.parseInt(rssi1.getText().toString()), b= Integer.parseInt(rssi2.getText().toString()), c= Integer.parseInt(rssi3.getText().toString()), d= Integer.parseInt(rssi4.getText().toString()), e= Integer.parseInt(rssi5.getText().toString()),f= Integer.parseInt(rssi5.getText().toString());
-                    double sir = (10^(30*5))*(10^signalStrength.getGsmSignalStrength()/(10^a+10^b+10^c+10^d+10^e+10^f));
+                    double sir = (10^signalStrength.getGsmSignalStrength()/(10^a+10^b+10^c+10^d+10^e+10^f));
                     sir = 10*Math.log(sir);
                     int s = (int) sir;
                     snr.setText(Integer.toString(s) + "dB");
                     //Ici on charge la puissance de signal pour afficher les marqueurs
-                    //Carte.puissanceSignal = sir;
-                }
+                    //Carte.puissanceSignal = sir; //si double
+                    //Carte.puissanceSignal = s; //si int
+                }*/
 
             }
 
@@ -187,9 +177,10 @@ public class MainActivity extends ActionBarActivity {
 
                 //on gère ici les cellules voisines
 
-                List<NeighboringCellInfo> neighborCells = telephonyManager.getNeighboringCellInfo();
+                List<NeighboringCellInfo> neighborCells = null;
+                neighborCells = telephonyManager.getNeighboringCellInfo();
 
-                if(neighborCells.get(0)!=null){
+                if(neighborCells.size() > 0){
                     int r1 = 2 * neighborCells.get(0).getRssi() - 113, c1 = neighborCells.get(0).getCid(), l1 = neighborCells.get(0).getLac();
                     rssi1 =(TextView) findViewById(R.id.RSSI1);
                     rssi1.setText(Integer.toString(r1));
@@ -202,20 +193,20 @@ public class MainActivity extends ActionBarActivity {
                     if(l1 ==0) lac1.setText("N/A");
                     else lac1.setText(Integer.toString(l1));
                 }
-                if(neighborCells.get(1)!=null){
+                if(neighborCells.size() > 1){
                     int r2 = 2 * neighborCells.get(1).getRssi() - 113, c2= neighborCells.get(1).getCid(), l2= neighborCells.get(1).getLac();
                     rssi2 =(TextView) findViewById(R.id.RSSI2);
                     rssi2.setText(Integer.toString(r2));
 
                     cid2 =(TextView) findViewById(R.id.CID2);
                     if(c2==65353) cid2.setText("N/A");
-                    else cid1.setText(Integer.toString(c2));
+                    else cid2.setText(Integer.toString(c2));
 
                     lac2 =(TextView) findViewById(R.id.LAC2);
                     if(l2 ==0) lac2.setText("N/A");
                     else lac2.setText(Integer.toString(l2));
                 }
-                if(neighborCells.get(2)!=null) {
+                if(neighborCells.size() >2) {
                     int r3 = 2 * neighborCells.get(2).getRssi() - 113, c3 = neighborCells.get(2).getCid(), l3 = neighborCells.get(2).getLac();
                     rssi3 = (TextView) findViewById(R.id.RSSI3);
                     rssi3.setText(Integer.toString(r3));
@@ -228,7 +219,7 @@ public class MainActivity extends ActionBarActivity {
                     if (l3 == 0) lac3.setText("N/A");
                     else lac3.setText(Integer.toString(l3));
                 }
-                if(neighborCells.get(3)!=null){
+                if(neighborCells.size() >3){
                     int r4 = 2 * neighborCells.get(3).getRssi() - 113, c4= neighborCells.get(3).getCid(), l4= neighborCells.get(3).getLac();
                     rssi4 =(TextView) findViewById(R.id.RSSI4);
                     rssi4.setText(Integer.toString(r4));
@@ -241,7 +232,7 @@ public class MainActivity extends ActionBarActivity {
                     if (l4==0) lac4.setText("N/A");
                     else lac4.setText(Integer.toString(l4));
                 }
-                if(neighborCells.get(4)!=null){
+                if(neighborCells.size() >4){
                     int r5 = 2 * neighborCells.get(4).getRssi() - 113, c5= neighborCells.get(4).getCid(), l5= neighborCells.get(4).getLac();
                     rssi5 =(TextView) findViewById(R.id.RSSI5);
                     rssi5.setText(Integer.toString(r5));
@@ -254,7 +245,7 @@ public class MainActivity extends ActionBarActivity {
                     if (l5 ==0) lac5.setText("N/A");
                     lac5.setText(Integer.toString(l5));
                 }
-                if(neighborCells.get(5)!=null){
+                if(neighborCells.size() >5){
                     int r6 = 2 * neighborCells.get(5).getRssi() - 113, c6= neighborCells.get(5).getCid(), l6= neighborCells.get(5).getLac();
 
                     rssi6 =(TextView) findViewById(R.id.RSSI6);
@@ -314,9 +305,13 @@ public class MainActivity extends ActionBarActivity {
         telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE | PhoneStateListener.LISTEN_CELL_LOCATION | PhoneStateListener.LISTEN_DATA_CONNECTION_STATE | PhoneStateListener.LISTEN_SERVICE_STATE | PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
     }
 
-    public void updateNeighbors(TelephonyManager telephonyManager){
-        //what?
+
+    private static void setContext(Context ctx) {
+        MainActivity.ctx = ctx;
     }
+
+    public static Context getContext() {
+        return ctx;
 
     }
 
