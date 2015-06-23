@@ -239,6 +239,7 @@ public class Carte extends FragmentActivity {
                 //Récupérer le layout du drawer
                 //mDrawerLayout.openDrawer(Gravity.LEFT);
                 //Ensuite, test sur le clic. Si 0, on ferme l'activité, si 2, on ouvre indoor
+                //Pour fermer : drawer.closeDrawer(Gravity.LEFT);
             }
         });
 
