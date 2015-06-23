@@ -142,7 +142,7 @@ public class MainActivity extends ActionBarActivity {
 
                 TextView snr = (TextView) findViewById(R.id.SNR);
 
-                /*if(rssi5.getText().toString().equals("--")|rssi5.getText().toString().equals("N/A")){
+                if(rssi5.getText().toString().equals("--")|rssi5.getText().toString().equals("N/A")|rssi4.getText().toString().equals("--")|rssi4.getText().toString().equals("N/A")){
                     snr.setText("N/A");
                 }
                 else if (rssi6.getText().toString().equals("--")|rssi6.getText().toString().equals("N/A")){
@@ -150,10 +150,10 @@ public class MainActivity extends ActionBarActivity {
                     int a= Integer.parseInt(rssi1.getText().toString()), b= Integer.parseInt(rssi2.getText().toString()), c= Integer.parseInt(rssi3.getText().toString()), d= Integer.parseInt(rssi4.getText().toString()), e= Integer.parseInt(rssi5.getText().toString());
                     double sir = (10^signalStrength.getGsmSignalStrength()/(10^a+10^b+10^c+10^d+10^e));
                     sir = 10*Math.log(sir);
-                    int s = (int) sir;
+                    int s = (int) sir -50;
                     snr.setText(Integer.toString(s) +"dB");
                     //Ici on charge la puissance de signal pour afficher les marqueurs
-                    //Carte.puissanceSignal = s; //si int
+                    Carte.puissanceSignal = s; //si int
                     //Carte.puissanceSignal = sir; //si double
                 }
                 else
@@ -162,12 +162,13 @@ public class MainActivity extends ActionBarActivity {
                     int a= Integer.parseInt(rssi1.getText().toString()), b= Integer.parseInt(rssi2.getText().toString()), c= Integer.parseInt(rssi3.getText().toString()), d= Integer.parseInt(rssi4.getText().toString()), e= Integer.parseInt(rssi5.getText().toString()),f= Integer.parseInt(rssi5.getText().toString());
                     double sir = (10^signalStrength.getGsmSignalStrength()/(10^a+10^b+10^c+10^d+10^e+10^f));
                     sir = 10*Math.log(sir);
-                    int s = (int) sir;
+                    int s = (int) sir -50;
                     snr.setText(Integer.toString(s) + "dB");
                     //Ici on charge la puissance de signal pour afficher les marqueurs
                     //Carte.puissanceSignal = sir; //si double
-                    //Carte.puissanceSignal = s; //si int
-                }*/
+                    Carte.puissanceSignal = s; //si int
+
+                }
 
             }
 

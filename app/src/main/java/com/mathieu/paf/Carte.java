@@ -52,7 +52,7 @@ public class Carte extends FragmentActivity {
     private ArrayList<PointCarte> listePointsCarte = new ArrayList<PointCarte>(); //initialisation de la liste de points GPS
     private ArrayList<Location> listePosition = new ArrayList<Location>();
     private Button nav = null;
-    public int puissanceSignal ;
+    public static int puissanceSignal ;
     private int niveauSignal ;
 
     @Override
@@ -117,7 +117,7 @@ public class Carte extends FragmentActivity {
                             listePointsCarte.add(new PointCarte(lat, lon, position.getAccuracy(), 1, 1));
 
                             // On met un marqueur en fonction de la puissance du signal
-                            if (puissanceSignal < -7.5) niveauSignal = 1 ;
+                            /*if (puissanceSignal < -7.5) niveauSignal = 1 ;
                             else {
                                 if (puissanceSignal < -2.5) niveauSignal = 2 ;
                                 else {
@@ -127,7 +127,8 @@ public class Carte extends FragmentActivity {
                                         else niveauSignal = 5 ;
                                     }
                                 }
-                            }
+                            } */
+                            niveauSignal = 1 ;
                             MarkerOptions m = new MarkerOptions().position(new LatLng(lat, lon)).anchor(0.5f,0.5f) ;
                             switch(niveauSignal) {
                                 case 1 : mMap.addMarker(m.icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal1)));
