@@ -117,23 +117,24 @@ public class Carte extends FragmentActivity {
                             listePointsCarte.add(new PointCarte(lat, lon, position.getAccuracy(), 1, 1));
 
                             // On met un marqueur en fonction de la puissance du signal
-                            if (puissanceSignal < -200) niveauSignal = 1 ;
+                            if (puissanceSignal < -7.5) niveauSignal = 1 ;
                             else {
-                                if (puissanceSignal < -170) niveauSignal = 2 ;
+                                if (puissanceSignal < -2.5) niveauSignal = 2 ;
                                 else {
-                                    if (puissanceSignal < -140) niveauSignal = 3 ;
+                                    if (puissanceSignal < 2.5) niveauSignal = 3 ;
                                     else {
-                                        if (puissanceSignal < -110) niveauSignal = 4 ;
+                                        if (puissanceSignal < 7.5) niveauSignal = 4 ;
                                         else niveauSignal = 5 ;
                                     }
                                 }
                             }
+                            MarkerOptions m = new MarkerOptions().position(new LatLng(lat, lon)).anchor(0.5f,0.5f) ;
                             switch(niveauSignal) {
-                                case 1 : mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal1)));
-                                case 2 : mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal2)));
-                                case 3 : mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal3)));
-                                case 4 : mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal4)));
-                                case 5 : mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal5)));
+                                case 1 : mMap.addMarker(m.icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal1)));
+                                case 2 : mMap.addMarker(m.icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal2)));
+                                case 3 : mMap.addMarker(m.icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal3)));
+                                case 4 : mMap.addMarker(m.icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal4)));
+                                case 5 : mMap.addMarker(m.icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur_signal5)));
                             }
 
                             Toast.makeText(MainActivity.getContext(), "Relevé de position : " + lat + ", " + lon, Toast.LENGTH_SHORT).show();
